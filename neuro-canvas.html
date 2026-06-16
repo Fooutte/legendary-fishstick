@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEURO//CANVAS</title>
+<style>
+  /* Ton CSS original complet - je le garde tel quel */
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+  /* ... (colle tout ton <style> original ici) ... */
+</style>
+</head>
+<body>
+  <!-- Tout ton HTML original (du <body>) -->
+
+  <!-- Je te donne seulement les parties modifiées ci-dessous, mais tu dois garder tout le reste -->
+
+<script>
+// ... tout ton code JS original ...
+
+// Remplace ta fonction askClaude par celle-ci :
+async function askClaude(prompt, context) {
+  const systemPrompt = context
+    ? `Tu es une IA intégrée dans un mind-map cyberpunk infini. Réponds de façon concise et percutante (2-4 phrases max, ou du code). Contexte du nœud parent: "${context}".`
+    : `Tu es une IA intégrée dans un mind-map cyberpunk infini. Réponds de façon concise et percutante (2-4 phrases max, ou du code propre).`;
+
+  try {
+    const response = await fetch('/api/groq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: 1000,
+        temperature: 0.7
+      })
+    });
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || '// ERREUR DE CONNEXION NEURALE';
+  } catch (err) {
+    console.error(err);
+    return '// NEURAL LINK LOST\n' + err.message;
+  }
+}
+
+// Change le core node
+createNode({ id: 0, x: 0, y: 0, type: 'core', content: 'GROQ\nCORE', badge: '◈ IA CENTRALE', parentId: null });
+
+// Dans la partie des chips, change les placeholders :
+const placeholders = {
+  ask: 'pose une question à Groq...',
+  text: 'écris une note libre...',
+  code: 'colle ou décris du code...',
+  idea: 'une idée, un concept...',
+};
+</script>
+</body>
+</html>
